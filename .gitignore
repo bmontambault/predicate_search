@@ -1,0 +1,11 @@
+*.csv
+*.json
+*.tes
+*.tra
+*.gz
+*.data
+*.names
+*.zip
+*.arff
+*.trn
+*.tst
