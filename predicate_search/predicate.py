@@ -2,6 +2,16 @@ import numpy as np
 
 class Predicate(object):
 
+    def __init__(self, feature_values_dict, selected_index=None):
+        self.feature_values_dict = feature_values_dict
+        self.selected_index = selected_index
+        if selected_index is None:
+            self.size = None
+        else:
+            self.size = len(self.selected_index)
+
+class Predicate(object):
+
     # def get_avg_logp_change(self, logp):
     #     if len(self.selected_index) == 0:
     #         return 0
