@@ -1,4 +1,4 @@
-
+import numpy as np
 
 class Aggregate(object):
 
@@ -10,21 +10,23 @@ class Aggregate(object):
 
 class Density(Aggregate):
 
-    def __init__(self, model):
+    def __init__(self, model, targets):
         self.model = model
+        self.targets = targets
 
     def aggregate(self, data):
-        logp = self.model.logp(data)
+        logp = self.model.logp(data[self.targets])
         joint_logp = logp.sum()
         return -joint_logp
 
 class Threshold(Aggregate):
 
-    def __init__(self, model, threshold):
+    def __init__(self, model, targets, threshold):
         self.model = model
+        self.targets = targets
         self.threshold = threshold
 
     def aggregate(self, data):
-        distance = self.model.distance(data)
+        distance = self.model.distance(data[self.targets])
         over_threshold = (distance > self.threshold).sum()
         return over_threshold
