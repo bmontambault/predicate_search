@@ -42,10 +42,10 @@ class PredicateInduction:
         rescaled_predicate = Predicate(feature_values_dict)
         return rescaled_predicate
 
-    def find_predicates(self, targets, index=None, c=.8, quantile=0, topn=5, maxiters=10):
+    def find_predicates(self, targets, index=None, c=.8, topn=5, max_merged=100, maxiters=10):
         aggregate = Density(self.model, targets)
         bottom_up = BottomUp(self.norm_data, aggregate, self.disc_cols)
         predicates = bottom_up.get_predicates()
-        found_predicates = bottom_up.find_predicates(predicates, c, index, quantile, topn, maxiters)
+        found_predicates = bottom_up.find_predicates(predicates, c, index, topn, max_merged, maxiters)
         rescaled_predicates = [self.rescale_predicate(p) for p in found_predicates]
         return rescaled_predicates

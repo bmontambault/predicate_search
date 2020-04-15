@@ -21,9 +21,7 @@ from predicate_search import PredicateInduction, RobustNormal, Density, BottomUp
 
 
 data = pd.read_csv('../data/intel_sensor_s3.csv')
-data.datetime = pd.to_datetime(data.datetime)
-data = data.drop('epoch', axis=1)
-data = data.rename(columns={'datetime': 'dtime'})
+data.dtime = pd.to_datetime(data.dtime)
 
 
 # In[3]:
@@ -72,22 +70,21 @@ rect = plt.Rectangle((115, 32), 15, 10, fill=False, facecolor='none', linestyle=
 ax.add_patch(rect)
 
 
-# In[9]:
+# In[10]:
 
 
 index1 = list(data[data.temperature > 122].index)
-p1 = predicate_induction.find_predicates(targets=['temperature'], c=.8, quantile=.25, index=index1, maxiters=2,
-                                         topn=5)
+p1 = predicate_induction.find_predicates(targets=['temperature'], c=.5, index=index1, maxiters=2, topn=5)
 
 
-# In[24]:
+# In[11]:
 
 
 for p in p1:
     print(p, '\n')
 
 
-# In[30]:
+# In[12]:
 
 
 fig, ax = plt.subplots()
@@ -96,15 +93,14 @@ rect = plt.Rectangle((-50, 15), 20, 10, fill=False, facecolor='none', linestyle=
 ax.add_patch(rect)
 
 
-# In[31]:
+# In[13]:
 
 
 index2 = list(data[data.temperature < -20].index)
-p2 = predicate_induction.find_predicates(targets=['temperature'], c=.8, quantile=.25, index=index2, maxiters=2,
-                                         topn=5)
+p2 = predicate_induction.find_predicates(targets=['temperature'], c=.8, index=index2, maxiters=2, topn=5)
 
 
-# In[32]:
+# In[14]:
 
 
 for p in p2:

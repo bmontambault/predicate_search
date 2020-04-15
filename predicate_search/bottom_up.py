@@ -1,5 +1,6 @@
 import itertools
 import numpy as np
+import pandas as pd
 from itertools import groupby
 from operator import itemgetter
 import copy
@@ -69,8 +70,17 @@ class BottomUp:
         filtered_data = self.data.iloc[predicate.remove_index(self.disc_data)]
         size = len(self.data) - len(filtered_data)
         agg_delta = self.aggregate(self.data) - self.aggregate(filtered_data)
-        influence = agg_delta / size ** c
+        if size > 0:
+            influence = agg_delta / size ** c
+        else:
+            influence = 0
         return influence
+
+    def get_best_single_tuple_influence(self, predicate):
+        filtered_data = self.data.iloc[predicate.remove_index(self.disc_data)]
+        best_index, best_score = self.aggregate.single_tuple_aggregate(filtered_data)
+        agg_delta = self.aggregate(self.data) - best_score
+        return best_index, agg_delta
 
     def get_top_n(self, predicates, n, c):
         sorted_predicates = sorted(predicates, key=lambda p: self.get_influence(p, c), reverse=True)
@@ -79,7 +89,19 @@ class BottomUp:
         return top_predicates
 
     def prune(self, predicates, data, index):
-        return [p for p in predicates if p.contains_index(data, index)]
+        pruned = [p for p in predicates if p.contains_index(data, index)]
+        return pruned
+
+    def prune_top_n(self, predicates, top_predicates, data):
+        best_tuple_index = [self.get_best_single_tuple_influence(p)[0] for p in top_predicates]
+
+        print('pruning top')
+        for p in predicates:
+            print(p, p.contains_index(data, best_tuple_index))
+        print()
+
+        pruned = [p for p in predicates if p.contains_index(data, best_tuple_index)]
+        return pruned
 
     def merge_adjacent(self, predicate, other_predicates, c):
         SMALL_NUM = 10**-3
@@ -113,7 +135,7 @@ class BottomUp:
         intersected = [p[2] for p in all_intersected if self.get_influence(p[2], c) > max(self.get_influence(p[0], c), self.get_influence(p[1], c))]
         return intersected
 
-    def find_top_predicates(self, predicates, c=.8, index=None, quantile=0, topn=5, maxiters=10):
+    def find_top_predicates(self, predicates, c=.8, index=None, topn=5, max_merged=100, maxiters=10):
         top_predicates = []
         for i in range(maxiters):
             print('iter: '+ str(i))
@@ -123,13 +145,8 @@ class BottomUp:
                 pruned_predicates = self.prune(predicates, self.disc_data, index)
             if len(pruned_predicates) == 0:
                 return top_predicates
-            if i > 0:
-                threshold = np.quantile([self.get_influence(p, c) for p in pruned_predicates], quantile)
-                above_threshold = [p for p in pruned_predicates if self.get_influence(p, c) >= threshold]
-            else:
-                above_threshold = pruned_predicates
-            merged_predicates = self.merge_all_adjacent(above_threshold, c)
 
+            merged_predicates = self.merge_all_adjacent([p for p in pruned_predicates if self.get_influence(p, c) > 0], c)
             print()
             print('merged:')
             for p in sorted(merged_predicates, key=lambda x: self.get_influence(x, c), reverse=True):
@@ -140,7 +157,12 @@ class BottomUp:
                 return top_predicates
             else:
                 top_predicates = new_top_predicates
-            intersected_predicates = self.intersect(merged_predicates, c)
+
+            top_merged_predicates = sorted(merged_predicates, key=lambda x: self.get_influence(x, c), reverse=True)[:max_merged]
+
+            print('intersecting', len(top_merged_predicates))
+            intersected_predicates = self.intersect(top_merged_predicates, c)
+            print('done intersecting')
 
             print()
             print('intersected:')
@@ -176,8 +198,8 @@ class BottomUp:
                         predicate = merged_predicate
         return predicate
 
-    def find_predicates(self, predicates, c=.8, index=None, quantile=0, topn=5, maxiters=10):
-        top_predicates = self.find_top_predicates(predicates, c, index, quantile, topn, maxiters)
+    def find_predicates(self, predicates, c=.8, index=None, topn=5, max_merged=100, maxiters=10):
+        top_predicates = self.find_top_predicates(predicates, c, index, topn, max_merged, maxiters)
         merged_predicates = [self.merge_intervals(p, c) for p in top_predicates]
         continuous_predicates = [self.disc_to_cont(p) for p in merged_predicates]
         return continuous_predicates

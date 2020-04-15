@@ -8,16 +8,26 @@ class Aggregate(object):
     def aggregate(self, data):
         raise NotImplemented
 
+    def single_tuple_aggregate(self, data):
+        score = self.score(data)
+        best_index = np.argmax(score)
+        best_score = score[best_index]
+        return best_index, best_score
+
 class Density(Aggregate):
 
     def __init__(self, model, targets):
         self.model = model
         self.targets = targets
 
+    def score(self, data):
+        logp = -self.model.logp(data[self.targets])
+        return logp
+
     def aggregate(self, data):
-        logp = self.model.logp(data[self.targets])
+        logp = self.score(data)
         joint_logp = logp.sum()
-        return -joint_logp
+        return joint_logp
 
 class Threshold(Aggregate):
 
@@ -26,7 +36,11 @@ class Threshold(Aggregate):
         self.targets = targets
         self.threshold = threshold
 
-    def aggregate(self, data):
+    def score(self, data):
         distance = self.model.distance(data[self.targets])
+        return distance
+
+    def aggregate(self, data):
+        distance = self.score(data)
         over_threshold = (distance > self.threshold).sum()
         return over_threshold

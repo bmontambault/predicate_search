@@ -11800,9 +11800,7 @@ div#notebook {
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;../data/intel_sensor_s3.csv&#39;</span><span class="p">)</span>
-<span class="n">data</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">datetime</span><span class="p">)</span>
-<span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;epoch&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;dtime&#39;</span><span class="p">})</span>
+<span class="n">data</span><span class="o">.</span><span class="n">dtime</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtime</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -11931,7 +11929,7 @@ div#notebook {
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;matplotlib.patches.Rectangle at 0x12acc4588&gt;</pre>
+<pre>&lt;matplotlib.patches.Rectangle at 0x129e8bf98&gt;</pre>
 </div>
 
 </div>
@@ -11957,12 +11955,11 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">index1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">temperature</span> <span class="o">&gt;</span> <span class="mi">122</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
-<span class="n">p1</span> <span class="o">=</span> <span class="n">predicate_induction</span><span class="o">.</span><span class="n">find_predicates</span><span class="p">(</span><span class="n">targets</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;temperature&#39;</span><span class="p">],</span> <span class="n">c</span><span class="o">=.</span><span class="mi">8</span><span class="p">,</span> <span class="n">quantile</span><span class="o">=.</span><span class="mi">25</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index1</span><span class="p">,</span> <span class="n">maxiters</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-                                         <span class="n">topn</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">predicate_induction</span><span class="o">.</span><span class="n">find_predicates</span><span class="p">(</span><span class="n">targets</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;temperature&#39;</span><span class="p">],</span> <span class="n">c</span><span class="o">=.</span><span class="mi">5</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index1</span><span class="p">,</span> <span class="n">maxiters</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">topn</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -11981,64 +11978,36 @@ div#notebook {
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>iter: 0
 merging
-voltage in [72]: 1174.948887235101 voltage in [71, 72]: 1214.8680418424083
-voltage in [71, 72]: 1214.8680418424083 voltage in [71, 72, 73]: 580.1073932998706
-humidity in [96]: 1022.8524156267055 humidity in [95, 96]: 962.8241637788224
-humidity in [96]: 1022.8524156267055 humidity in [96, 97]: -17.007620361944845
+voltage in [72]: 2969.927026860172 voltage in [71, 72]: 3228.6510704707994
+voltage in [71, 72]: 3228.6510704707994 voltage in [71, 72, 73]: 2266.9751344009355
+humidity in [96]: 2100.0555403220997 humidity in [95, 96]: 2211.9890661682584
 
 merged:
-temperature in [99] 1289.2823787623581
-voltage in [71, 72] 1214.8680418424083
-humidity in [96] 1022.8524156267055
-humidity in [95] 519.5675576667295
-voltage in [73] 188.63907573851498
-moteid in [15] 42.457434829007404
-dtime in [82] 21.071022013881873
-light in [99] -2.3808266247442864
-dtime in [90] -8.458787449600203
-dtime in [81] -11.0341273633159
-humidity in [97] -17.648511176845723
+temperature in [99] 3746.0059279586026
+voltage in [71, 72] 3228.6510704707994
+humidity in [95, 96] 2211.9890661682584
+voltage in [73] 668.9356376674191
+moteid in [15] 404.68355336578924
+dtime in [82] 247.62444244164743
+intersecting 6
+done intersecting
 
 intersected:
-moteid in [15] and dtime in [82] 1266.3811393009962
-voltage in [73] and dtime in [82] 982.6139829571109
-voltage in [73] and light in [99] 982.6139829571109
-voltage in [73] and humidity in [97] 959.7374361774603
-humidity in [95] and moteid in [15] 727.3449657574303
-humidity in [95] and light in [99] 727.3449657574303
-moteid in [15] and dtime in [81] 727.3449657574303
-humidity in [95] and dtime in [90] 633.190569650731
-humidity in [95] and dtime in [81] 633.190569650731
-moteid in [15] and dtime in [90] 633.190569650731
-dtime in [82] and light in [99] 247.03069845910133
-moteid in [15] and humidity in [97] 226.28669806847293
-moteid in [15] and light in [99] 181.16726287961222
-light in [99] and dtime in [81] 53.96066866311713
-light in [99] and humidity in [97] -0.6138776951243233
-light in [99] and dtime in [90] -1.8087635012693337
-dtime in [81] and humidity in [97] -11.02333971396928
+moteid in [15] and dtime in [82] 3581.8667646659214
+humidity in [95, 96] and moteid in [15] 2283.001066015156
+voltage in [73] and dtime in [82] 1899.5717089515722
 
 iter: 1
 merging
-moteid in [15] and dtime in [82]: 1266.3811393009962 moteid in [15] and dtime in [81, 82]: 1281.8293799465557
-moteid in [15] and dtime in [81, 82]: 1281.8293799465557 moteid in [15] and dtime in [81, 82, 90]: 1289.2823787623581
-humidity in [95] and moteid in [15]: 727.3449657574303 humidity in [95, 97] and moteid in [15]: 244.96122363907833
 
 merged:
-moteid in [15] and dtime in [81, 82, 90] 1289.2823787623581
-voltage in [73] and dtime in [82] 982.6139829571109
-voltage in [73] and light in [99] 982.6139829571109
-voltage in [73] and humidity in [97] 959.7374361774603
-humidity in [95] and moteid in [15] 727.3449657574303
-humidity in [95] and light in [99] 727.3449657574303
-humidity in [95] and dtime in [90] 633.190569650731
-humidity in [95] and dtime in [81] 633.190569650731
-dtime in [82] and light in [99] 247.03069845910133
-moteid in [15] and humidity in [97] 226.28669806847293
+moteid in [15] and dtime in [82] 3581.8667646659214
+humidity in [95, 96] and moteid in [15] 2283.001066015156
+voltage in [73] and dtime in [82] 1899.5717089515722
+intersecting 3
+done intersecting
 
 intersected:
-dtime in [82] and light in [99] and moteid in [15] and humidity in [97] 1174.948887235101
-humidity in [95] and dtime in [81, 90] 727.3449657574303
 
 </pre>
 </div>
@@ -12050,7 +12019,7 @@ humidity in [95] and dtime in [81, 90] 727.3449657574303
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">p1</span><span class="p">:</span>
@@ -12071,13 +12040,13 @@ humidity in [95] and dtime in [81, 90] 727.3449657574303
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>moteid in [15] and ((dtime &gt;= &#39;2004-03-02 06:43:24.354086363&#39; and dtime &lt;= &#39;2004-03-02 23:59:59.543254&#39;)) 
+<pre>((temperature &gt;= 122.15299999999999 and temperature &lt;= 122.15299999999999)) 
 
-((temperature &gt;= 122.15299999999999 and temperature &lt;= 122.15299999999999)) 
+moteid in [15] and ((dtime &gt;= &#39;2004-03-02 07:40:59.642373454&#39; and dtime &lt;= &#39;2004-03-02 23:59:59.543254&#39;)) 
 
 ((voltage &gt;= 2.2707543757575754 and voltage &lt;= 2.3342112060606057)) 
 
-((humidity &gt;= -2.0027636363636248 and humidity &lt;= 17.294290909090932)) 
+((humidity &gt;= -1854.52 and humidity &lt;= 17.294290909090932)) and moteid in [15] 
 
 ((voltage &gt;= 0.0180369 and voltage &lt;= 2.3659396212121213)) and ((dtime &gt;= &#39;2004-03-02 07:40:59.642373454&#39; and dtime &lt;= &#39;2004-03-02 23:59:59.543254&#39;)) 
 
@@ -12091,7 +12060,7 @@ humidity in [95] and dtime in [81, 90] 727.3449657574303
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
@@ -12110,13 +12079,13 @@ humidity in [95] and dtime in [81, 90] 727.3449657574303
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[30]:</div>
+<div class="prompt output_prompt">Out[12]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;matplotlib.patches.Rectangle at 0x1046a1710&gt;</pre>
+<pre>&lt;matplotlib.patches.Rectangle at 0x13087f710&gt;</pre>
 </div>
 
 </div>
@@ -12142,12 +12111,11 @@ humidity in [95] and dtime in [81, 90] 727.3449657574303
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">index2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">temperature</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">20</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
-<span class="n">p2</span> <span class="o">=</span> <span class="n">predicate_induction</span><span class="o">.</span><span class="n">find_predicates</span><span class="p">(</span><span class="n">targets</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;temperature&#39;</span><span class="p">],</span> <span class="n">c</span><span class="o">=.</span><span class="mi">8</span><span class="p">,</span> <span class="n">quantile</span><span class="o">=.</span><span class="mi">25</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index2</span><span class="p">,</span> <span class="n">maxiters</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-                                         <span class="n">topn</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">predicate_induction</span><span class="o">.</span><span class="n">find_predicates</span><span class="p">(</span><span class="n">targets</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;temperature&#39;</span><span class="p">],</span> <span class="n">c</span><span class="o">=.</span><span class="mi">8</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index2</span><span class="p">,</span> <span class="n">maxiters</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">topn</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12166,82 +12134,16 @@ humidity in [95] and dtime in [81, 90] 727.3449657574303
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>iter: 0
 merging
-voltage in [75]: -6.273045228284527 voltage in [75, 76]: -9.480137352135657
 
 merged:
 humidity in [95] 519.5675576667295
 temperature in [0] 255.98892951507787
-voltage in [75] -6.273045228284527
-voltage in [76] -9.437970932070472
-light in [47] -9.957624826597351
-dtime in [14] -10.234244836162459
-light in [33] -10.388409527606123
-light in [30] -10.560222274620743
-dtime in [15] -11.826060813386539
-moteid in [20] -15.044811772085122
+intersecting 2
+done intersecting
 
 intersected:
-voltage in [76] and moteid in [20] 236.04941715770315
-voltage in [75] and dtime in [15] 205.49295307241846
-voltage in [75] and moteid in [20] 205.49295307241846
-voltage in [76] and dtime in [14] 205.49295307241846
-voltage in [76] and dtime in [15] 205.49295307241846
-voltage in [76] and light in [47] 83.56691684576565
-voltage in [75] and light in [30] 65.77924348379324
-voltage in [76] and light in [33] 20.1882984914147
-light in [33] and moteid in [20] 6.175022524182486
-light in [30] and moteid in [20] 5.923110391915271
-dtime in [15] and moteid in [20] 4.0098087874578505
-light in [47] and dtime in [14] 1.8602683662488033
-light in [47] and moteid in [20] -0.14854100572824622
-dtime in [14] and moteid in [20] -0.18844105192100355
-light in [33] and dtime in [15] -1.4181990478865325
-voltage in [75] and light in [47] -2.5443371645625334
-voltage in [75] and light in [33] -2.812096277121385
-voltage in [76] and light in [30] -3.0433644663850488
-light in [30] and dtime in [15] -3.087576945148717
-dtime in [14] and light in [33] -4.831902085603193
-light in [47] and dtime in [15] -4.87805458241935
-dtime in [14] and light in [30] -5.861152318847821
 
 iter: 1
-merging
-voltage in [76] and moteid in [20]: 236.04941715770315 voltage in [75, 76] and moteid in [20]: 255.98892951507787
-voltage in [75] and dtime in [15]: 205.49295307241846 voltage in [75, 76] and dtime in [14, 15]: 255.98892951507787
-voltage in [75, 76] and dtime in [14, 15]: 255.98892951507787 voltage in [75, 76] and dtime in [14, 15]: 255.98892951507787
-voltage in [76] and light in [47]: 83.56691684576565 voltage in [75, 76] and light in [30, 47]: 41.54324318752519
-voltage in [76] and light in [47]: 83.56691684576565 voltage in [76] and light in [33, 47]: 38.14673354824578
-voltage in [75] and light in [30]: 65.77924348379324 voltage in [75, 76] and light in [30, 33]: 23.206138843770468
-
-merged:
-voltage in [75, 76] and moteid in [20] 255.98892951507787
-voltage in [75, 76] and dtime in [14, 15] 255.98892951507787
-voltage in [76] and light in [47] 83.56691684576565
-voltage in [75] and light in [30] 65.77924348379324
-voltage in [76] and light in [33] 20.1882984914147
-light in [33] and moteid in [20] 6.175022524182486
-light in [30] and moteid in [20] 5.923110391915271
-dtime in [15] and moteid in [20] 4.0098087874578505
-light in [47] and dtime in [14] 1.8602683662488033
-
-intersected:
-voltage in [76] and light in [33, 47] and moteid in [20] 236.04941715770315
-voltage in [76] and light in [30, 47] and moteid in [20] 205.49295307241846
-voltage in [76] and light in [47] and dtime in [14] 205.49295307241846
-voltage in [75] and light in [30, 33] and moteid in [20] 205.49295307241846
-voltage in [75] and light in [30] and moteid in [20] 205.49295307241846
-voltage in [75] and light in [30] and dtime in [15] and moteid in [20] 205.49295307241846
-voltage in [76] and light in [33] and moteid in [20] 205.49295307241846
-voltage in [76] and light in [30, 33] and moteid in [20] 205.49295307241846
-voltage in [76] and light in [33] and dtime in [15] and moteid in [20] 205.49295307241846
-voltage in [76] and light in [33, 47] and dtime in [14] 205.49295307241846
-light in [33] and moteid in [20] and dtime in [15] 35.67662374251568
-light in [33, 47] and moteid in [20] and dtime in [14] 29.455245005703667
-light in [30, 47] and moteid in [20] and dtime in [14] 29.455245005703667
-dtime in [14, 15] and moteid in [20] and light in [47] 29.455245005703667
-light in [30] and moteid in [20] and dtime in [15] 17.10303987586815
-light in [30, 33] and moteid in [20] 6.9436423600616
-
 </pre>
 </div>
 </div>
@@ -12252,7 +12154,7 @@ light in [30, 33] and moteid in [20] 6.9436423600616
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">p2</span><span class="p">:</span>
@@ -12275,13 +12177,7 @@ light in [30, 33] and moteid in [20] 6.9436423600616
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>((humidity &gt;= -21.299818181818182 and humidity &lt;= -2.0027636363636248)) 
 
-((voltage &gt;= 0.0180369 and voltage &lt;= 2.4611248666666667)) and moteid in [20] 
-
-((voltage &gt;= 0.0180369 and voltage &lt;= 2.4611248666666667)) and ((dtime &gt;= &#39;2004-02-28 14:25:00.038851272&#39; and dtime &lt;= &#39;2004-02-28 16:20:10.615425454&#39;)) 
-
 ((temperature &gt;= -38.4 and temperature &lt;= -36.778252525252526)) 
-
-((voltage &gt;= 2.429396451515151 and voltage &lt;= 2.4611248666666667)) and ((light &gt;= 877.029494949495 and light &lt;= 895.6896969696969)) 
 
 </pre>
 </div>
