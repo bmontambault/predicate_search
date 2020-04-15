@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python
 # coding: utf-8
 
 # In[1]:
@@ -65,5 +65,11 @@ breast_cancer_s1 = pd.concat([breast_cancer[breast_cancer.label=='B'],
 # In[ ]:
 
 
-brea
+breast_cancer_s1.to_csv('breast_cancer_s1.csv', index=False)
+
+
+# In[ ]:
+
+
+
 

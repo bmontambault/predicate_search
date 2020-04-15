@@ -2,7 +2,7 @@
 <html>
 <head><meta charset="utf-8" />
 
-<title>breast_cancer</title>
+<title>satellite</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -13132,18 +13132,28 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>original breast cancer data: <a href="http://archive.ics.uci.edu/ml/datasets/breast+cancer+wisconsin+(diagnostic">http://archive.ics.uci.edu/ml/datasets/breast+cancer+wisconsin+(diagnostic</a>)</p>
-<p>download original brest cancer data: <a href="https://tufts.box.com/s/jub5u5et23u84x8qwrod0ptc1ueqwapx">https://tufts.box.com/s/jub5u5et23u84x8qwrod0ptc1ueqwapx</a></p>
+<p>original breast cancer data: <a href="https://archive.ics.uci.edu/ml/datasets/Statlog+(Landsat+Satellite">https://archive.ics.uci.edu/ml/datasets/Statlog+(Landsat+Satellite</a>)</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>download original satellite train data: <a href="https://tufts.box.com/s/dgueo97bahj6qnfxpmjwppqrx6648eow">https://tufts.box.com/s/dgueo97bahj6qnfxpmjwppqrx6648eow</a></p>
+<p>download original satellite test data: <a href="https://tufts.box.com/s/6w25hwhewbsxt404kbmsturjf1k65kmo">https://tufts.box.com/s/6w25hwhewbsxt404kbmsturjf1k65kmo</a></p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[63]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">breast_cancer_original</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;breast_cancer_original.data&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">satellite_train</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;satellite_original.trn&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;\s+&quot;</span><span class="p">)</span>
+<span class="n">satellite_test</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;satellite_original.trn&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;\s+&quot;</span><span class="p">)</span>
+<span class="n">satellite_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">satellite_train</span><span class="p">,</span> <span class="n">satellite_test</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -13153,13 +13163,16 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[87]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">,</span> <span class="s1">&#39;texture&#39;</span><span class="p">,</span> <span class="s1">&#39;perimeter&#39;</span><span class="p">,</span> <span class="s1">&#39;area&#39;</span><span class="p">,</span> <span class="s1">&#39;smoothness&#39;</span><span class="p">,</span> <span class="s1">&#39;compactness&#39;</span><span class="p">,</span> <span class="s1">&#39;concavity&#39;</span><span class="p">,</span> <span class="s1">&#39;nconcave&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;symmetry&#39;</span><span class="p">,</span> <span class="s1">&#39;fractal&#39;</span><span class="p">]</span>
-<span class="n">measures</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;ste&#39;</span><span class="p">,</span> <span class="s1">&#39;worst&#39;</span><span class="p">]</span>
-<span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">col</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">measures</span><span class="p">))]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">labels</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="nb">int</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]),</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]))</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="s1">&#39;&#39;&#39;1 red soil</span>
+<span class="s1">2 cotton crop</span>
+<span class="s1">3 grey soil</span>
+<span class="s1">4 damp grey soil</span>
+<span class="s1">5 soil with vegetation stubble</span>
+<span class="s1">6 mixture class (all types present)</span>
+<span class="s1">7 very damp grey soil&#39;&#39;&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)])</span>
 </pre></div>
 
     </div>
@@ -13169,10 +13182,10 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[90]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">breast_cancer_original</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">columns</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">satellite_data</span><span class="p">[</span><span class="mi">36</span><span class="p">]</span> <span class="o">=</span> <span class="n">satellite_data</span><span class="p">[</span><span class="mi">36</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13182,10 +13195,10 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[91]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">breast_cancer_original</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;breast_cancer.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">satellite_data</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;satellite_data.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13196,7 +13209,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>processed data uploaded here: <a href="https://tufts.box.com/s/4dx7q3bsfag2xu3h5fsqah15r1fe56go">https://tufts.box.com/s/4dx7q3bsfag2xu3h5fsqah15r1fe56go</a></p>
+<p>processed data uploaded here: <a href="https://tufts.box.com/s/mps252wo3zlkjmib5dc5wws9ralhu2hq">https://tufts.box.com/s/mps252wo3zlkjmib5dc5wws9ralhu2hq</a></p>
 
 </div>
 </div>
@@ -13204,32 +13217,18 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Scenario-1">Scenario 1<a class="anchor-link" href="#Scenario-1">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Keep first 10 malignant cases as anomalies</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>download breast cancer data: <a href="https://tufts.box.com/s/4dx7q3bsfag2xu3h5fsqah15r1fe56go">https://tufts.box.com/s/4dx7q3bsfag2xu3h5fsqah15r1fe56go</a></p>
+<h3 id="Scenario-1">Scenario 1<a class="anchor-link" href="#Scenario-1">&#182;</a></h3><p>Red soil, gray soil, damp gray soil, and very damp soil taken as normal data. 75 random samples are added from cotton crop and vegetation stubble.</p>
+<p>download setellite data: <a href="https://tufts.box.com/s/mps252wo3zlkjmib5dc5wws9ralhu2hq">https://tufts.box.com/s/mps252wo3zlkjmib5dc5wws9ralhu2hq</a></p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[94]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">breast_cancer</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;breast_cancer.csv&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">574823</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13239,11 +13238,13 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[96]:</div>
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">breast_cancer_s1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">breast_cancer</span><span class="p">[</span><span class="n">breast_cancer</span><span class="o">.</span><span class="n">label</span><span class="o">==</span><span class="s1">&#39;B&#39;</span><span class="p">],</span>
-                              <span class="n">breast_cancer</span><span class="p">[</span><span class="n">breast_cancer</span><span class="o">.</span><span class="n">label</span><span class="o">==</span><span class="s1">&#39;M&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="mi">10</span><span class="p">]])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">satellite_normal_s1</span> <span class="o">=</span> <span class="n">satellite_data</span><span class="p">[</span><span class="n">satellite_data</span><span class="p">[</span><span class="mi">36</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span>
+    <span class="p">[</span><span class="s1">&#39;red soil&#39;</span><span class="p">,</span> <span class="s1">&#39;gray soil&#39;</span><span class="p">,</span> <span class="s1">&#39;damp gray soil&#39;</span><span class="p">,</span> <span class="s1">&#39;very damp gray soil&#39;</span><span class="p">])]</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">)</span>
+<span class="n">satellite_anomalies_s1</span> <span class="o">=</span> <span class="n">satellite_data</span><span class="p">[</span><span class="n">satellite_data</span><span class="p">[</span><span class="mi">36</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39;cotton crop&#39;</span><span class="p">,</span> <span class="s1">&#39;vegetation stubble&#39;</span><span class="p">]</span>
+                                                         <span class="p">)]</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">75</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13253,10 +13254,220 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">breast_cancer_s1</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;breast_cancer_s1.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">satellite_s1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">satellite_normal_s1</span><span class="p">,</span> <span class="n">satellite_anomalies_s1</span><span class="p">])</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="mi">36</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">satellite_s1</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[24]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <th>9</th>
+      <th>...</th>
+      <th>26</th>
+      <th>27</th>
+      <th>28</th>
+      <th>29</th>
+      <th>30</th>
+      <th>31</th>
+      <th>32</th>
+      <th>33</th>
+      <th>34</th>
+      <th>35</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2045</th>
+      <td>63</td>
+      <td>77</td>
+      <td>86</td>
+      <td>68</td>
+      <td>67</td>
+      <td>84</td>
+      <td>93</td>
+      <td>75</td>
+      <td>71</td>
+      <td>91</td>
+      <td>...</td>
+      <td>106</td>
+      <td>83</td>
+      <td>76</td>
+      <td>111</td>
+      <td>120</td>
+      <td>94</td>
+      <td>76</td>
+      <td>115</td>
+      <td>120</td>
+      <td>102</td>
+    </tr>
+    <tr>
+      <th>2046</th>
+      <td>67</td>
+      <td>84</td>
+      <td>93</td>
+      <td>75</td>
+      <td>71</td>
+      <td>91</td>
+      <td>101</td>
+      <td>83</td>
+      <td>75</td>
+      <td>99</td>
+      <td>...</td>
+      <td>120</td>
+      <td>94</td>
+      <td>76</td>
+      <td>115</td>
+      <td>120</td>
+      <td>102</td>
+      <td>72</td>
+      <td>115</td>
+      <td>120</td>
+      <td>102</td>
+    </tr>
+    <tr>
+      <th>2047</th>
+      <td>75</td>
+      <td>99</td>
+      <td>105</td>
+      <td>86</td>
+      <td>75</td>
+      <td>103</td>
+      <td>110</td>
+      <td>86</td>
+      <td>71</td>
+      <td>99</td>
+      <td>...</td>
+      <td>120</td>
+      <td>102</td>
+      <td>72</td>
+      <td>115</td>
+      <td>125</td>
+      <td>98</td>
+      <td>72</td>
+      <td>115</td>
+      <td>120</td>
+      <td>98</td>
+    </tr>
+    <tr>
+      <th>2090</th>
+      <td>60</td>
+      <td>79</td>
+      <td>89</td>
+      <td>65</td>
+      <td>63</td>
+      <td>84</td>
+      <td>89</td>
+      <td>73</td>
+      <td>67</td>
+      <td>97</td>
+      <td>...</td>
+      <td>100</td>
+      <td>81</td>
+      <td>71</td>
+      <td>103</td>
+      <td>118</td>
+      <td>96</td>
+      <td>76</td>
+      <td>116</td>
+      <td>122</td>
+      <td>99</td>
+    </tr>
+    <tr>
+      <th>2091</th>
+      <td>67</td>
+      <td>97</td>
+      <td>101</td>
+      <td>80</td>
+      <td>74</td>
+      <td>102</td>
+      <td>114</td>
+      <td>90</td>
+      <td>74</td>
+      <td>115</td>
+      <td>...</td>
+      <td>122</td>
+      <td>99</td>
+      <td>76</td>
+      <td>112</td>
+      <td>128</td>
+      <td>99</td>
+      <td>80</td>
+      <td>116</td>
+      <td>128</td>
+      <td>103</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 36 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">satellite_s1</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;satellite_s1.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 
     </div>
