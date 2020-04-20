@@ -160,8 +160,7 @@ index
 # In[29]:
 
 
-p = predicate_induction.find_predicates(targets=targets, c=.5, quantile=.25, index=index, maxiters=2,
-                                         topn=5)
+p = predicate_induction.find_predicates(targets=targets, c=.5, index=index, maxiters=2, topn=5)
 
 
 # In[30]:

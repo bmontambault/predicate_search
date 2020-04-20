@@ -24,6 +24,18 @@ data = pd.read_csv('../data/intel_sensor_s3.csv')
 data.dtime = pd.to_datetime(data.dtime)
 
 
+# In[17]:
+
+
+data[data.temperature.round(3)==122.153]
+
+
+# In[15]:
+
+
+data.temperature.max()
+
+
 # In[3]:
 
 

@@ -11810,6 +11810,415 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">temperature</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">==</span><span class="mf">122.153</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[17]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>moteid</th>
+      <th>temperature</th>
+      <th>humidity</th>
+      <th>light</th>
+      <th>voltage</th>
+      <th>dtime</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>83368</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>-4.00000</td>
+      <td>1847.36</td>
+      <td>2.27556</td>
+      <td>2004-03-02 15:49:25.114608</td>
+    </tr>
+    <tr>
+      <th>85168</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>-3.27191</td>
+      <td>1847.36</td>
+      <td>2.30202</td>
+      <td>2004-03-02 07:39:29.812714</td>
+    </tr>
+    <tr>
+      <th>85169</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>1.69454</td>
+      <td>1847.36</td>
+      <td>2.30202</td>
+      <td>2004-03-02 07:40:23.401811</td>
+    </tr>
+    <tr>
+      <th>85170</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>2.72497</td>
+      <td>1847.36</td>
+      <td>2.30202</td>
+      <td>2004-03-02 07:40:59.964933</td>
+    </tr>
+    <tr>
+      <th>85171</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>3.51504</td>
+      <td>1847.36</td>
+      <td>2.31097</td>
+      <td>2004-03-02 07:41:23.141843</td>
+    </tr>
+    <tr>
+      <th>85172</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>10.75530</td>
+      <td>1847.36</td>
+      <td>2.31097</td>
+      <td>2004-03-02 07:44:15.939767</td>
+    </tr>
+    <tr>
+      <th>85173</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>13.01150</td>
+      <td>1847.36</td>
+      <td>2.31097</td>
+      <td>2004-03-02 07:44:58.211213</td>
+    </tr>
+    <tr>
+      <th>85174</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>14.49220</td>
+      <td>1847.36</td>
+      <td>2.31097</td>
+      <td>2004-03-02 07:45:23.153435</td>
+    </tr>
+    <tr>
+      <th>85175</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>14.87050</td>
+      <td>1847.36</td>
+      <td>2.31097</td>
+      <td>2004-03-02 07:45:58.507635</td>
+    </tr>
+    <tr>
+      <th>85176</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>15.62540</td>
+      <td>1847.36</td>
+      <td>2.31097</td>
+      <td>2004-03-02 07:47:53.923766</td>
+    </tr>
+    <tr>
+      <th>85177</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>18.39900</td>
+      <td>1847.36</td>
+      <td>2.32000</td>
+      <td>2004-03-02 07:51:29.937206</td>
+    </tr>
+    <tr>
+      <th>85178</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>20.32970</td>
+      <td>1847.36</td>
+      <td>2.32000</td>
+      <td>2004-03-02 07:53:53.300899</td>
+    </tr>
+    <tr>
+      <th>85179</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>20.69930</td>
+      <td>1847.36</td>
+      <td>2.32000</td>
+      <td>2004-03-02 07:56:29.284833</td>
+    </tr>
+    <tr>
+      <th>85180</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>19.58890</td>
+      <td>1847.36</td>
+      <td>2.32000</td>
+      <td>2004-03-02 07:58:15.921110</td>
+    </tr>
+    <tr>
+      <th>85181</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>20.29270</td>
+      <td>1847.36</td>
+      <td>2.32000</td>
+      <td>2004-03-02 07:58:20.261664</td>
+    </tr>
+    <tr>
+      <th>85182</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>21.51030</td>
+      <td>1847.36</td>
+      <td>2.32000</td>
+      <td>2004-03-02 08:00:07.767606</td>
+    </tr>
+    <tr>
+      <th>85183</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>22.31870</td>
+      <td>1847.36</td>
+      <td>2.32000</td>
+      <td>2004-03-02 08:01:43.199984</td>
+    </tr>
+    <tr>
+      <th>85184</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>22.53860</td>
+      <td>1847.36</td>
+      <td>2.32000</td>
+      <td>2004-03-02 08:03:01.898253</td>
+    </tr>
+    <tr>
+      <th>85185</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>22.68520</td>
+      <td>1847.36</td>
+      <td>2.32000</td>
+      <td>2004-03-02 08:03:30.021843</td>
+    </tr>
+    <tr>
+      <th>85186</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>23.56260</td>
+      <td>1847.36</td>
+      <td>2.32000</td>
+      <td>2004-03-02 08:04:53.326071</td>
+    </tr>
+    <tr>
+      <th>85187</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>18.32450</td>
+      <td>1847.36</td>
+      <td>2.32000</td>
+      <td>2004-03-02 08:11:12.717630</td>
+    </tr>
+    <tr>
+      <th>85188</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>22.53860</td>
+      <td>1847.36</td>
+      <td>2.32910</td>
+      <td>2004-03-02 08:13:43.642915</td>
+    </tr>
+    <tr>
+      <th>85189</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>22.24530</td>
+      <td>1847.36</td>
+      <td>2.32910</td>
+      <td>2004-03-02 08:18:29.789971</td>
+    </tr>
+    <tr>
+      <th>85190</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>22.35530</td>
+      <td>1847.36</td>
+      <td>2.33827</td>
+      <td>2004-03-02 08:19:43.376768</td>
+    </tr>
+    <tr>
+      <th>85191</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>16.82860</td>
+      <td>1847.36</td>
+      <td>2.32000</td>
+      <td>2004-03-02 08:20:03.125103</td>
+    </tr>
+    <tr>
+      <th>85192</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>16.30290</td>
+      <td>1847.36</td>
+      <td>2.32000</td>
+      <td>2004-03-02 08:21:12.497319</td>
+    </tr>
+    <tr>
+      <th>85193</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>16.75350</td>
+      <td>1847.36</td>
+      <td>2.33827</td>
+      <td>2004-03-02 08:23:13.639662</td>
+    </tr>
+    <tr>
+      <th>85194</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>22.75840</td>
+      <td>1847.36</td>
+      <td>2.32910</td>
+      <td>2004-03-02 08:23:54.528912</td>
+    </tr>
+    <tr>
+      <th>85195</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>25.66960</td>
+      <td>1847.36</td>
+      <td>2.33827</td>
+      <td>2004-03-02 08:27:04.270368</td>
+    </tr>
+    <tr>
+      <th>85196</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>26.53590</td>
+      <td>1847.36</td>
+      <td>2.33827</td>
+      <td>2004-03-02 08:28:35.714904</td>
+    </tr>
+    <tr>
+      <th>85197</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>27.79360</td>
+      <td>1847.36</td>
+      <td>2.34751</td>
+      <td>2004-03-02 08:31:30.831185</td>
+    </tr>
+    <tr>
+      <th>85198</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>27.90110</td>
+      <td>1847.36</td>
+      <td>2.34751</td>
+      <td>2004-03-02 08:33:11.804488</td>
+    </tr>
+    <tr>
+      <th>85199</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>28.04430</td>
+      <td>1847.36</td>
+      <td>2.34751</td>
+      <td>2004-03-02 08:33:40.305303</td>
+    </tr>
+    <tr>
+      <th>85200</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>28.04430</td>
+      <td>1847.36</td>
+      <td>2.34751</td>
+      <td>2004-03-02 08:35:53.402871</td>
+    </tr>
+    <tr>
+      <th>85201</th>
+      <td>15.0</td>
+      <td>122.153</td>
+      <td>28.04430</td>
+      <td>1847.36</td>
+      <td>2.34751</td>
+      <td>2004-03-02 08:36:35.727068</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">temperature</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[15]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>122.15299999999999</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
