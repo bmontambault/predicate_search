@@ -1,56 +1,199 @@
+import pandas as pd
 import numpy as np
+import copy
 
-from .model import RobustNormal
-from .predicate_data import PredicateData
-from .predicate_search import PredicateSearch
+from .predicate import ContPredicate, DiscPredicate, DatePredicate, Conjunction, Disjunction
+from .score import Score
 
-class PredicateInduction:
+class PredicateSearch:
 
-    def __init__(self, model=RobustNormal, c=1, b=.1, quantile=0):
-        self.model = model
-        self.c = c
-        self.b = b
-        self.quantile = quantile
-
-    def fit(self, data, disc_cols=[], **kwargs):
+    def __init__(self, data, model, targets, specificity, bins=100, **kwargs):
         self.data = data
-        self.features = data.columns
-        self.disc_cols = disc_cols
-        data_min = data.drop(disc_cols, axis=1).min()
-        data_max = data.drop(disc_cols, axis=1).max()
+        self.score = Score(model, data, targets, **kwargs)
+        self.bins = bins
+        self.dtypes = {col: self.infer_dtype(self.data[col]) for col in self.data.columns}
+        self.specificity = specificity
+        self.predicate_scores = {}
+        self.base_predicates = self.get_base_predicates()
+        self.predicates = [a for b in [[Conjunction({predicates[i].feature: predicates[i]}, self.data)
+                            for i in range(len(predicates))] for predicates in self.base_predicates.values()] for a in b]
+        self.predicates = self.intersect_predicates(self.predicates)
+        self.merged_predicates = {k: self.merge_same_features(v, self.specificity) if len(k) > 1 else v for k, v in self.predicates.items()}
+        self.predicates = [a for b in [v for v in self.merged_predicates.values()] for a in b]
+        self.predicates = sorted(self.predicates, key=lambda x: self.get_predicate_score(x), reverse=True)
 
-        norm_data = ((data.drop(disc_cols, axis=1) - data_min) / (data_max - data_min)).reset_index(drop=True)
-        self.norm_data = norm_data
-        for col in disc_cols:
-            norm_data[col] = data[col]
-        self.m = self.model()
-        self.m.fit(norm_data.drop(disc_cols, axis=1), **kwargs)
+    def add_feature(self, predicate):
+        best_score = self.get_predicate_score(predicate)
+        best_predicate = None
+        for feature, base_predicates in self.base_predicates.items():
+            if feature not in predicate.features:
+                for base_predicate in base_predicates:
+                    new_predicate = predicate.merge(base_predicate)
+                    new_score = self.get_predicate_score(new_predicate)
+                    if new_score > best_score:
+                        best_score = new_score
+                        best_predicate = new_predicate
+        if best_predicate is None:
+            return predicate
+        else:
+            return best_predicate
 
-    def predicate_induction(self, targets=None, threshold=None, c=None, b=None, quantile=None, maxiters=10, verbose=False):
-        if c is None:
-            c = self.c
-        if b is None:
-            b = self.b
-        if quantile is None:
-            quantile = self.quantile
+    def expand_predicates(self, predicate, predicates):
+        if len(predicates) == 0:
+            return predicate
+        for i in range(len(predicates)):
+            if predicate.is_adjacent(predicates[i]):
+                new_predicate = predicate.merge(predicates[i])
+                if self.get_predicate_score(new_predicate) > self.get_predicate_score(predicate):
+                    new_predicates = predicates[:i] + predicates[i+1:]
+                    return self.expand_predicates(new_predicate, new_predicates)
+        return predicate
 
-        distances = self.m.get_distances(self.norm_data, targets)
-        all_p = []
-        data = self.data.copy()
-        for i in range(1):
-            if threshold is None:
-                index = None
+    def expand_feature(self, predicate, feature):
+        base_predicates = self.base_predicates[feature]
+        return self.expand_predicates(predicate, base_predicates)
+
+    def expand_features(self, predicate):
+        for feature in predicate.features:
+            predicate = self.expand_feature(predicate, feature)
+        return predicate
+
+    def maximize_predicate(self, predicate):
+        new_predicate = self.add_feature(predicate)
+        if self.get_predicate_score(new_predicate) > self.get_predicate_score(predicate):
+            predicate = self.expand_features(new_predicate)
+            return self.maximize_predicate(predicate)
+        else:
+            return predicate
+
+    def infer_dtype(self, d, origin=1970):
+        if pd.to_datetime(d).min().year > origin:
+            return 'date'
+        else:
+            if pd.to_numeric(d, errors='coerce').notnull().all():
+                if np.array_equal(d, d.astype(int)):
+                    return 'discrete'
+                else:
+                    return 'continuous'
             else:
-                index = list(data[distances >= threshold].index)
-            logp = self.m.score(data, targets)
-            predicate_search = PredicateSearch(data, logp, self.disc_cols, c=c, b=b, quantile=quantile)
+                return 'discrete'
 
-            # features = [f for f in data.columns if f not in targets]
-            p = predicate_search.search_features(features=features, index=index, c=c, b=b, quantile=quantile,
-                                                 maxiters=maxiters, verbose=verbose)
-            # p = predicate_search.search_features(features=self.features, index=index, c=c, b=b, quantile=quantile,
-            #                                      maxiters=maxiters, verbose=verbose)
-            index = [a for b in [pi.selected_index for pi in p] for a in b]
-            data = data[data.index.isin(index)].reset_index(drop=True)
-            all_p += p
-        return all_p
+    def get_base_predicates(self):
+        features_predicates = {}
+        for feature, dtype in self.dtypes.items():
+            if dtype == 'discrete':
+                predicates = [DiscPredicate(feature, [val], self.data) for val in self.data[feature].unique().tolist()]
+            elif dtype in ['continuous', 'date']:
+                values = pd.cut(self.data[feature], bins=self.bins, right=True)
+                intervals = pd.DataFrame([(interval.left, interval.right) for interval in values.sort_values().unique()])
+                adjacent = intervals.rename(columns={0:'left', 1:'right'})
+                adjacent['left'] = adjacent['left'].shift(-1)
+                intervals = [list(a) for a in list(intervals.dropna().to_records(index=False))]
+                adjacent = [list(a) for a in list(adjacent.dropna().to_records(index=False))]
+                if dtype == 'continuous':
+                    predicates = [ContPredicate(feature, interval, adjacent, self.data, values) for interval in intervals]
+                elif dtype == 'date':
+                    predicates = [DatePredicate(feature, interval, adjacent, self.data, values) for interval in intervals]
+            sorted_predicates = sorted(predicates, key=lambda p: self.get_predicate_score(p), reverse=True)
+            features_predicates[feature] = self.merge_same_features(sorted_predicates, self.specificity)
+        return features_predicates
+
+    def set_predicate_score(self, predicate):
+        self.predicate_scores[predicate.query] = self.score.likelihood_influence(predicate.indices, self.specificity)
+
+    def get_predicate_score(self, predicate):
+        if predicate in self.predicate_scores.keys():
+            return self.predicate_scores[predicate.query]
+        else:
+            self.set_predicate_score(predicate)
+            return self.predicate_scores[predicate.query]
+
+    def merge_same_features(self, predicates, specificity):
+        predicates = predicates.copy()
+        merged_predicates = []
+        while len(predicates) > 0:
+            p = predicates.pop(0)
+            p, predicates = self.merge_predicate_list(p, predicates, specificity)
+            merged_predicates.append(p)
+        return merged_predicates
+
+    def merge_predicate_list(self, p, predicates, specificity):
+        for i in range(len(predicates)):
+            new_p = predicates[i]
+            # print(p, new_p, p.is_adjacent(new_p))
+            if p.is_adjacent(new_p):
+                merged_p = p.merge(new_p)
+                # print(self.get_predicate_score(p), self.get_predicate_score(merged_p))
+                if self.get_predicate_score(merged_p) >= self.get_predicate_score(p) -10**-10:
+                    del predicates[i]
+                    return self.merge_predicate_list(merged_p, predicates, specificity)
+        return p, predicates
+
+    def merge_predicate(self, predicate):
+        new_base_predicates = []
+        for base_predicate in predicate:
+            feature_predicates = self.base_predicates[base_predicate.feature]
+            for feature_predicate in feature_predicates:
+                new_predicate = predicate.merge(feature_predicate)
+                if self.get_predicate_score(new_predicate) >= self.get_predicate_score(predicate):
+                    predicate = new_predicate
+            new_base_predicates.append(predicate)
+        return Conjunction(new_base_predicates, self.data)
+
+    def insert_predicate(self, predicate_list, predicate):
+        for i in range(len(predicate_list)):
+            if self.get_predicate_score(predicate) > self.get_predicate_score(predicate_list[i]):
+                predicate_list.insert(i, predicate)
+                return None
+        predicate_list.append(predicate)
+
+    def intersect_predicates(self, predicates):
+        new_predicates = {}
+        for predicate in predicates:
+            if predicate.features in new_predicates:
+                new_predicates[predicate.features].append(predicate)
+            else:
+                new_predicates[predicate.features] = [predicate]
+
+        for i in range(len(predicates)):
+            for j in range(i+1, len(predicates)):
+                if predicates[i].feature_predicate.keys() != predicates[j].feature_predicate.keys():
+                    new_predicate = predicates[i].merge(predicates[j])
+                    new_score = self.get_predicate_score(new_predicate)
+                    old_score_a = self.get_predicate_score(predicates[i])
+                    old_score_b = self.get_predicate_score(predicates[j])
+                    if new_score -10**-10 > old_score_a and new_score -10**-10 > old_score_b:
+                        if new_predicate.features in new_predicates.keys():
+                            self.insert_predicate(new_predicates[new_predicate.features], new_predicate)
+                        else:
+                            new_predicates[new_predicate.features] = [new_predicate]
+                        if predicates[i] in new_predicates[predicates[i].features]:
+                            new_predicates[predicates[i].features].remove(predicates[i])
+                        if predicates[j] in new_predicates[predicates[j].features]:
+                            new_predicates[predicates[j].features].remove(predicates[j])
+        return new_predicates
+
+    def search(self):
+        predicate = self.maximize_predicate(self.predicates[0])
+        for p in self.predicates[1:]:
+            if len(p.features) > 1:
+                new_predicate = predicate.join(self.maximize_predicate(p))
+            else:
+                new_predicate = predicate.join(p)
+            new_score = self.get_predicate_score(new_predicate)
+            if new_score >= self.get_predicate_score(predicate) -10**-10:
+                predicate = new_predicate
+            else:
+                return predicate
+        return predicate
+
+    def get_data(self, predicate, y_feature=None):
+        feature_d = {}
+        for feature, p in predicate.feature_predicate.items():
+            mask = predicate.feature_mask[[col for col in predicate.feature_mask.columns if col != feature]].prod(axis=1).astype(bool)
+            if y_feature is None:
+                d = pd.Series(self.score.score.loc[mask].values, index=self.data.loc[mask][feature])
+            else:
+                d = pd.Series(self.data.loc[mask][y_feature].values, index=self.data.loc[mask][feature])
+            feature_d[feature] = d.sort_index()
+        return feature_d
