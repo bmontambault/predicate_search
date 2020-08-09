@@ -1,1 +1,1 @@
-from .predicate_induction import PredicateSearch
+from .predicate_induction import PredicateInduction

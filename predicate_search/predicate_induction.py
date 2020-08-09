@@ -5,7 +5,7 @@ import copy
 from .predicate import ContPredicate, DiscPredicate, DatePredicate, Conjunction, Disjunction
 from .score import Score
 
-class PredicateSearch:
+class PredicateInduction:
 
     def __init__(self, data, model, targets, specificity, bins=100, **kwargs):
         self.data = data
