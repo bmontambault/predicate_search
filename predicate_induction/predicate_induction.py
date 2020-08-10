@@ -10,9 +10,18 @@ class PredicateInduction:
     def __init__(self, data, model, targets, specificity, bins=100, **kwargs):
         self.data = data
         self.score = Score(model, data, targets, **kwargs)
+        self.targets = targets
         self.bins = bins
         self.dtypes = {col: self.infer_dtype(self.data[col]) for col in self.data.columns}
         self.specificity = specificity
+        self.set_predicates()
+
+    def drop_indices(self, indices):
+        self.data = self.data[~self.data.index.isin(indices)]
+        self.score.score = self.score.score[~self.score.score.index.isin(indices)]
+        self.set_predicates()
+
+    def set_predicates(self):
         self.predicate_scores = {}
         self.base_predicates = self.get_base_predicates()
         self.predicates = [a for b in [[Conjunction({predicates[i].feature: predicates[i]}, self.data)
@@ -22,11 +31,11 @@ class PredicateInduction:
         self.predicates = [a for b in [v for v in self.merged_predicates.values()] for a in b]
         self.predicates = sorted(self.predicates, key=lambda x: self.get_predicate_score(x), reverse=True)
 
-    def add_feature(self, predicate):
+    def add_feature(self, predicate, features=None):
         best_score = self.get_predicate_score(predicate)
         best_predicate = None
         for feature, base_predicates in self.base_predicates.items():
-            if feature not in predicate.features:
+            if feature not in predicate.features and (features is None or feature in features):
                 for base_predicate in base_predicates:
                     new_predicate = predicate.merge(base_predicate)
                     new_score = self.get_predicate_score(new_predicate)
@@ -44,7 +53,7 @@ class PredicateInduction:
         for i in range(len(predicates)):
             if predicate.is_adjacent(predicates[i]):
                 new_predicate = predicate.merge(predicates[i])
-                if self.get_predicate_score(new_predicate) > self.get_predicate_score(predicate):
+                if self.get_predicate_score(new_predicate) >= self.get_predicate_score(predicate) -10**-10:
                     new_predicates = predicates[:i] + predicates[i+1:]
                     return self.expand_predicates(new_predicate, new_predicates)
         return predicate
@@ -58,11 +67,13 @@ class PredicateInduction:
             predicate = self.expand_feature(predicate, feature)
         return predicate
 
-    def maximize_predicate(self, predicate):
-        new_predicate = self.add_feature(predicate)
+    def maximize_predicate(self, predicate, features=None):
+        # print('original', predicate, self.get_predicate_score(predicate))
+        new_predicate = self.add_feature(predicate, features)
+        # print('new', new_predicate, self.get_predicate_score(new_predicate))
         if self.get_predicate_score(new_predicate) > self.get_predicate_score(predicate):
             predicate = self.expand_features(new_predicate)
-            return self.maximize_predicate(predicate)
+            return self.maximize_predicate(predicate, features)
         else:
             return predicate
 
@@ -174,12 +185,9 @@ class PredicateInduction:
         return new_predicates
 
     def search(self):
-        predicate = self.maximize_predicate(self.predicates[0])
+        predicate = self.predicates[0]
         for p in self.predicates[1:]:
-            if len(p.features) > 1:
-                new_predicate = predicate.join(self.maximize_predicate(p))
-            else:
-                new_predicate = predicate.join(p)
+            new_predicate = predicate.join(p)
             new_score = self.get_predicate_score(new_predicate)
             if new_score >= self.get_predicate_score(predicate) -10**-10:
                 predicate = new_predicate
@@ -187,13 +195,42 @@ class PredicateInduction:
                 return predicate
         return predicate
 
-    def get_data(self, predicate, y_feature=None):
+    def search_all(self, maxiters=100):
+        full_data = self.data.copy()
+        full_score = self.score.score.copy()
+        all_predicates = []
+        old_score = np.inf
+        s = self.score.score.var()
+        for i in range(maxiters):
+            score = self.score.score.sum() / (len(self.score.score))
+            if score < old_score - s:
+                old_score = score
+                predicate = self.search()
+                self.drop_indices(predicate.indices)
+                all_predicates.append(predicate)
+            else:
+                break
+        self.data = full_data
+        self.score.score = full_score
+        joined_predicate = all_predicates[0]
+        for p in all_predicates[1:]:
+            joined_predicate = joined_predicate.join(p)
+        return joined_predicate
+
+    def get_data(self, predicate):
+        if len(self.targets) == 1:
+            y_feature = self.targets[0]
+        else:
+            y_feature = None
         feature_d = {}
         for feature, p in predicate.feature_predicate.items():
             mask = predicate.feature_mask[[col for col in predicate.feature_mask.columns if col != feature]].prod(axis=1).astype(bool)
-            if y_feature is None:
+            mask = mask.reindex(self.data.index).fillna(True)
+            if y_feature is None or y_feature == feature:
                 d = pd.Series(self.score.score.loc[mask].values, index=self.data.loc[mask][feature])
             else:
                 d = pd.Series(self.data.loc[mask][y_feature].values, index=self.data.loc[mask][feature])
-            feature_d[feature] = d.sort_index()
+            df = d.sort_index().reset_index().rename(columns={0: [y_feature, 'score'][feature == y_feature]})
+            df['anomaly'] = df.eval(predicate.feature_predicate[feature].query).astype(int)
+            feature_d[feature] = df
         return feature_d
