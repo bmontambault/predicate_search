@@ -9,3 +9,5 @@
 *.arff
 *.trn
 *.tst
+
+!docs/intel_sensor_sample.csv
