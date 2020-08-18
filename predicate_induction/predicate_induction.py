@@ -18,8 +18,9 @@ class PredicateInduction:
 
     def drop_indices(self, indices):
         self.data = self.data[~self.data.index.isin(indices)]
-        self.score.score = self.score.score[~self.score.score.index.isin(indices)]
-        self.set_predicates()
+        if len(self.data) > 0:
+            self.score.score = self.score.score[~self.score.score.index.isin(indices)]
+            self.set_predicates()
 
     def set_predicates(self):
         self.predicate_scores = {}
@@ -206,6 +207,7 @@ class PredicateInduction:
             if score < old_score - s:
                 old_score = score
                 predicate = self.search()
+                print(predicate)
                 self.drop_indices(predicate.indices)
                 all_predicates.append(predicate)
             else:
