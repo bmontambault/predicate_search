@@ -207,7 +207,7 @@ class PredicateInduction:
             if score < old_score - s:
                 old_score = score
                 predicate = self.search()
-                print(predicate)
+                # print(predicate)
                 self.drop_indices(predicate.indices)
                 all_predicates.append(predicate)
             else:

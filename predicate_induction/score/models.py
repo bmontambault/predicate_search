@@ -1,5 +1,4 @@
 import scipy.stats as st
-import numpy as np
 import pandas as pd
 from sklearn.covariance import MinCovDet
 from sklearn.neighbors import LocalOutlierFactor
