@@ -2,12 +2,12 @@ import numpy as np
 
 from .predicate_induction import PredicateInduction
 from ..predicate.predicate import Conjunction
-from ..hypothesis_testing.hypothesis_testing import ExpNormMix
+from ..hypothesis_testing.hypothesis_testing import JZS
 from ..anomaly_detection.anomaly_detection import RobustCov
 
 class LatticeSearch(PredicateInduction):
 
-    def __init__(self, data, dtypes=None, targets=None, anomaly_model=RobustCov, slice_model=ExpNormMix, bins=100):
+    def __init__(self, data, dtypes=None, targets=None, anomaly_model=RobustCov, slice_model=JZS, bins=100):
         super().__init__(data, dtypes, targets, anomaly_model, slice_model)
         self.bins = bins
         self.feature_base_predicates = self.get_feature_base_predicates()
